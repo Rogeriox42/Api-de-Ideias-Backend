@@ -1,14 +1,30 @@
 const IdeaController = require('../controllers/IdeaController') 
-const {Router} = require('express')
 
-const routes = Router() 
 
-// routes.get('/idea', IdeaController.index)
-
-routes.get('/idea', IdeaController.index) 
-routes.get('/idea/:_id', IdeaController.show) 
-routes.post('/idea', IdeaController.create) 
-routes.put('/idea/:_id', IdeaController.update) 
-routes.delete('/idea/:_id', IdeaController.destroy) 
-
-module.exports = routes 
+module.exports = [
+    {
+        method: 'GET', 
+        path: '/idea', 
+        handler: IdeaController.index
+    }, 
+    {
+        method: 'GET', 
+        path: '/idea/{_id}', 
+        handler: IdeaController.show
+    }, 
+    {
+        method: 'POST', 
+        path: '/idea', 
+        handler: IdeaController.create
+    }, 
+    {
+        method: 'PUT', 
+        path: '/idea/{id}', 
+        handler: IdeaController.update
+    }, 
+    {
+        method: 'DELETE', 
+        path: '/idea/{id}', 
+        handler: IdeaController.destroy
+    }, 
+]

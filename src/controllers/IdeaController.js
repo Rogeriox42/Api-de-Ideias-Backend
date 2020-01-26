@@ -8,14 +8,18 @@ function filterData(req) {
 }
 
 module.exports = {
-    async index(req, res) {
-        return res.json(await IdeaModel.find())
+    async index(request, handler) {
+        console.log('index')
+        // return {
+        //     message: 'Index'
+        // }
+        return await IdeaModel.find()
     },
 
     async create(req, res) {
         const data = filterData(req)
         const result = await IdeaModel.create(data)
-        return res.json(result)
+        return result
     },
 
     async update(req, res) {
@@ -25,7 +29,7 @@ module.exports = {
         if(result.nModified !== 1)
             return res.json(Boom.internal('Error Updating the idea'))
 
-        return res.json({message: `The idea ${data.name} was updated successfully!`})
+        return {message: `The idea ${data.name} was updated successfully!`}
     },
 
     async show(req, res) {
@@ -34,11 +38,11 @@ module.exports = {
             console.log('_id', _id)
             const idea = await IdeaModel.findOne({ _id })
             if (idea)
-                return res.json(idea)
+                return idea
 
-            return res.json(Boom.preconditionFailed(`The provided ID doesn't exist`))
+            return Boom.preconditionFailed(`The provided ID doesn't exist`)
         } catch (error) {
-            return res.json(Boom.expectationFailed('The provided ID is not valid'))
+            return Boom.expectationFailed('The provided ID is not valid')
         }
     },
 
@@ -47,13 +51,13 @@ module.exports = {
             const { _id } = req.params
             const result = await IdeaModel.deleteOne({ _id })
             if (result.n !== 1)
-                return res.json(Boom.preconditionFailed(`The provided ID doesn't exist`))
+                return Boom.preconditionFailed(`The provided ID doesn't exist`)
 
             return res.json({ message: 'Idea successfully deleted' })
 
         }
         catch (error) {
-            return res.json(Boom.expectationFailed('The provided ID is not valid'))
+            return Boom.expectationFailed('The provided ID is not valid')
         }
     }
 }

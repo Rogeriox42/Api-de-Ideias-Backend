@@ -1,17 +1,51 @@
 const express = require('express')
-const routes = require('./routes/ideaRoutes')
+const ideaRoutes = require('./routes/ideaRoutes')
 const cors = require('cors') 
 const dotenv = require('dotenv').config()
+const Hapi = require('@hapi/hapi') 
+const db = require('./db/MongoDB').createConnection()
 const PORT = process.env.PORT || 3050
-const app = express()
-const db = require('./db/MongoDB')
+const HOST = process.env.HOST || 'localhost'
 
-db.createConnection()
+class App{
+    constructor(){
+        this.server = null 
+        this.createServer()
+        this.loadRoutes()
+    }
 
-app.use(cors())
-app.use(express.json())
-app.use(routes)
+    async createServer(){
+        this.server = Hapi.Server({
+            port: PORT, 
+            host: HOST
+        })
 
-app.listen(PORT, () =>{
-    console.log(`application running at port ${PORT}`) 
-})
+        await this.server.start() 
+        console.log(`Application running on port: ${PORT}.`)
+    }
+
+    loadRoutes(){
+        console.log('loadRoutes()')
+        this.server.route(
+            ideaRoutes
+        )
+    }
+}
+
+new App()
+
+
+
+
+
+
+// const app = express()
+// const db = require('./db/MongoDB').createConnection()
+
+// app.use(cors())
+// app.use(express.json())
+// app.use(routes)
+
+// app.listen(PORT, () =>{
+//     console.log(`application running at port ${PORT}`) 
+// })
