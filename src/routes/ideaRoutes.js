@@ -20,6 +20,21 @@ const IdeaUpdateModel = Joi.object(ideaUpdateSchema).label('Idea Update Model')
 module.exports = [
     {
         method: 'GET', 
+        path: '/', 
+        handler: (req) =>{
+            return{
+                statusCode: 200, 
+                message: `Welcome! You successfully reached the "/" Idea Api ® endpoint. \nTry reaching for /ideas or /ideas/:id`
+            }
+        },
+        options: {
+            description: 'Get all the ideas', 
+            notes: 'List all the available ideas', 
+            tags: ['api']
+        }
+    }, 
+    {
+        method: 'GET', 
         path: '/idea', 
         handler: IdeaController.index,
         options: {
