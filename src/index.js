@@ -6,10 +6,10 @@ const Hapi = require('@hapi/hapi')
 const inert = require('@hapi/inert') 
 const vision = require('@hapi/vision')
 const hapiSwagger = require('hapi-swagger') 
-const db = require('./db/MongoDB').createConnection()
+const db = require('./db/Mongodb').createConnection()
 
 const PORT = process.env.PORT || 3050
-const HOST = process.env.HOST || 'localhost'
+// const HOST = process.env.HOST || 'localhost'
 
 const swaggerOptions = {
     info: {
@@ -27,8 +27,11 @@ class App{
 
     async createServer(){
         this.server = Hapi.Server({
-            port: PORT, 
-            host: HOST
+            port: PORT,
+            // host: HOST,
+            routes: {
+                cors: true 
+            }
         })
 
         await this.server.register([

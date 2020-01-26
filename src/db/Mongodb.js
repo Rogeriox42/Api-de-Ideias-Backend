@@ -1,6 +1,6 @@
 const mongoose = require('mongoose')
-const USER = 'ideauser'
-const PASSWORD = 'ideapassword'
+const USER = process.env.USER 
+const PASSWORD = process.env.PASSWORD
 const URI = `mongodb+srv://${USER}:${PASSWORD}@cluster0-b0doj.mongodb.net/tests?retryWrites=true&w=majority`
 
 class MongoDB {
