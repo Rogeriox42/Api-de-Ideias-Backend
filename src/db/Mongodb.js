@@ -1,26 +1,36 @@
 const mongoose = require('mongoose')
+const USER = 'ideauser'
+const PASSWORD = 'ideapassword'
+const URI = `mongodb+srv://${USER}:${PASSWORD}@cluster0-b0doj.mongodb.net/tests?retryWrites=true&w=majority`
 
 class MongoDB {
-    constructor(connection, schema) {
-        this.connection = connection
-        this.schema = schema
+    constructor() {
+        this.connection = null 
+        this.createConnection()
+        
+     }
+    createConnection() {
+        this.connection = mongoose.connect(URI, {
+            useNewUrlParser: true, 
+            useUnifiedTopology: true 
+        })
+        this.logger()
     }
+    logger() { 
+        this.connection = mongoose.connection 
+        
+        this.connection.on('connected', () => {
+            console.log('Connection - Success!')
+        })
 
-    async create(element) {
-        return await this.schema.create(element)
-    }
+        this.connection.on('error', () => {
+            console.log('Connection - Error!')
+        })
 
-    read(query){
-        return this.schema.readOne({query})
-    }
-
-    update(_id, item){
-        return this.schema.updateOne({_id}, {$item: item})
-    }
-
-    delete(query){
-        return this.schema.deleteOne({query})
+        this.connection.on('disconnected', () => {
+            console.log('Connection - Disconnected!')
+        })
     }
 }
 
-module.exports = MongoDB
+module.exports = new MongoDB()
