@@ -3,9 +3,20 @@ const ideaRoutes = require('./routes/ideaRoutes')
 const cors = require('cors') 
 const dotenv = require('dotenv').config()
 const Hapi = require('@hapi/hapi') 
+const inert = require('@hapi/inert') 
+const vision = require('@hapi/vision')
+const hapiSwagger = require('hapi-swagger') 
 const db = require('./db/MongoDB').createConnection()
+
 const PORT = process.env.PORT || 3050
 const HOST = process.env.HOST || 'localhost'
+
+const swaggerOptions = {
+    info: {
+        title: 'Idea API', 
+        version: '1.0'
+    }
+}
 
 class App{
     constructor(){
@@ -19,6 +30,15 @@ class App{
             port: PORT, 
             host: HOST
         })
+
+        await this.server.register([
+            vision, 
+            inert, 
+            {
+                plugin: hapiSwagger, 
+                options: swaggerOptions
+            }
+        ])
 
         await this.server.start() 
         console.log(`Application running on port: ${PORT}.`)

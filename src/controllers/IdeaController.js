@@ -2,37 +2,34 @@ const IdeaModel = require('../db/models/Idea')
 const Boom = require('boom')
 
 function filterData(req) {
-    const { name, description, type, img_url } = req.body
+    const { name, description, type, img_url } = req.payload
     const data = { name, description, type, img_url }
     return JSON.parse(JSON.stringify(data))
 }
 
 module.exports = {
-    async index(request, handler) {
-        console.log('index')
-        // return {
-        //     message: 'Index'
-        // }
+    async index(req) {
         return await IdeaModel.find()
     },
 
-    async create(req, res) {
+    async create(req) {
         const data = filterData(req)
         const result = await IdeaModel.create(data)
         return result
     },
 
-    async update(req, res) {
+    async update(req) {
+        console.log('update') 
         const { _id } = req.params
         const data = filterData(req)
-        const result = await IdeaModel.update({_id}, {$set: data})
+        const result = await IdeaModel.updateOne({_id}, {$set: data})
         if(result.nModified !== 1)
-            return res.json(Boom.internal('Error Updating the idea'))
+            return Boom.internal('Error Updating the idea')
 
         return {message: `The idea ${data.name} was updated successfully!`}
     },
 
-    async show(req, res) {
+    async show(req) {
         try {
             const { _id } = req.params
             console.log('_id', _id)
@@ -46,14 +43,14 @@ module.exports = {
         }
     },
 
-    async destroy(req, res) {
+    async destroy(req) {
         try {
             const { _id } = req.params
             const result = await IdeaModel.deleteOne({ _id })
             if (result.n !== 1)
                 return Boom.preconditionFailed(`The provided ID doesn't exist`)
 
-            return res.json({ message: 'Idea successfully deleted' })
+            return { message: 'Idea successfully deleted' }
 
         }
         catch (error) {
